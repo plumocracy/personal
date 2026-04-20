@@ -2,6 +2,8 @@
 	import './layout.css';
 	//import favicon from '/favicon.webp' with { type: 'file' };
 	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
+	import { page } from '$app/stores';
 
 	let { children } = $props();
 
@@ -91,6 +93,7 @@
 <div class="fixed -z-1 h-screen w-screen">
 	{#each imageData as img}
 		<div
+			in:fade
 			style="
             position: fixed;
             left: {img.x}%;
@@ -111,5 +114,8 @@
 		</div>
 	{/each}
 </div>
-
-{@render children()}
+{#key $page.url.pathname}
+	<main class="fade-in">
+		{@render children()}
+	</main>
+{/key}

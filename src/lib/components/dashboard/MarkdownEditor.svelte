@@ -64,14 +64,6 @@
 			location.reload();
 		}
 	}
-
-	onMount(() => {
-		const interval = setInterval(() => {
-			const el = document.getElementById('form') as HTMLFormElement;
-			el.requestSubmit();
-		}, 10_000);
-		return () => clearInterval(interval);
-	});
 </script>
 
 <form

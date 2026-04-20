@@ -7,6 +7,7 @@
 @theme {
 	--color-almost-black: #13120E;
 	--color-mint: #76B494;
+	--color-poink: #FA99C5;
 	--color-blood-orange: #EF4B38;
 	--color-pale: #F3E1C7;
 	--color-pale-2: #EFE3D2;
@@ -60,4 +61,18 @@
 	50% {
 		transform: translateY(var(--bounce-amount));
 	}
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+
+	to {
+		opacity: 1;
+	}
+}
+
+.fade-in {
+	animation: fadeIn 0.4s ease-in-out;
 }

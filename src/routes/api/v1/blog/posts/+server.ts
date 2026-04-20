@@ -3,8 +3,12 @@ import { posts } from "$lib/server/db/blog.schema";
 import { lte, desc } from "drizzle-orm";
 import { json } from "@sveltejs/kit";
 
-export async function GET() {
-	const postList = await db.select({
+
+// FIXME: Handle error where limit isnt a number.
+export async function GET({ url }) {
+	const limit = url.searchParams.get('limit');
+
+	let query = db.select({
 		id: posts.id,
 		title: posts.title,
 		summary: posts.summary,
@@ -15,5 +19,14 @@ export async function GET() {
 		.where(lte(posts.publishedAt, new Date()))
 		.orderBy(desc(posts.publishedAt))
 
-	return json({ status: 200, posts: postList })
+	if (limit) {
+		let postList = await query.limit(Number(limit))
+		return json({ status: 200, posts: postList })
+	} else {
+		let postList = await query;
+		return json({ status: 200, posts: postList })
+	}
+
+
+
 }
