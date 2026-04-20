@@ -12,7 +12,8 @@ export default defineConfig({
 		host: true, // spotify needs this for development to see 127.0.0.1:5173 as valid url
 		fs: {
 			allow: ['static', '..']
-		}
+		},
+		allowedHosts: ["rico-unsage-ada.ngrok-free.dev"]
 	},
 	test: {
 		expect: { requireAssertions: true },

@@ -87,7 +87,17 @@
 	});
 </script>
 
-<svelte:head><link rel="icon" href="/favicon.webp" /></svelte:head>
+<svelte:head>
+	<meta property="og:title" content="Plumocracy" />
+	<meta
+		property="og:description"
+		content="Software engineer, dance music lover, and math fan. I build interactive web apps, games, and AI applications. This is my corner of the internet."
+	/>
+	<meta property="og:image" content="https://drugs.broker/opengraph.png" />
+	<meta property="og:url" content="https://plumocracy.com" />
+	<meta name="twitter:card" content="summary_large_image" />
+	<link rel="icon" href="/favicon.webp" />
+</svelte:head>
 
 <!-- This div contains the background images -->
 <div class="fixed -z-1 h-screen w-screen">
