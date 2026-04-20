@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { signIn, signOut } from '$lib/auth-client';
 	import type { PageProps } from './$types';
-	import Button from '$lib/components/button.svelte';
+	import Button from '$lib/components/Button.svelte';
 
 	let { data }: PageProps = $props();
 </script>
