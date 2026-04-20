@@ -1,0 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Franklin:ital,wght@0,100..900;1,100..900&family=Oswald:wght@200..700&family=Righteous&display=swap');
+
+@import 'tailwindcss';
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+@theme {
+	--color-almost-black: #13120E;
+	--color-mint: #76B494;
+	--color-blood-orange: #EF4B38;
+	--color-pale: #F3E1C7;
+	--color-pale-2: #EFE3D2;
+	--color-light-pale: #f7f1e9;
+
+	--color-plum-50: #f5eef8;
+	--color-plum-100: #e8d5f0;
+	--color-plum-200: #d4abe1;
+	--color-plum-300: #bc7fcc;
+	--color-plum-400: #a364b5;
+	--color-plum-500: #8A509E;
+	--color-plum-600: #734084;
+	--color-plum-700: #5c3169;
+	--color-plum-800: #42234c;
+	--color-plum-900: #291530;
+	--color-plum-950: #110E18;
+
+
+	--font-franklin: "Libre Franklin";
+	--font-oswald: "Oswald";
+	--font-righteous: "Righteous";
+}
+
+@layer utilities {
+	.bg-atomic {
+		position: relative;
+	}
+
+
+	.bg-atomic::before {
+		content: "";
+		position: fixed;
+		inset: 0;
+		background-image: url('/background.webp');
+		background-size: 20%;
+		background-position: 0 var(--parallax-y, 0);
+		background-repeat: repeat;
+		opacity: 0.01;
+		pointer-events: none;
+		z-index: -2;
+	}
+}
+
+@keyframes bounce {
+
+	0%,
+	100% {
+		transform: translateY(0);
+	}
+
+	50% {
+		transform: translateY(var(--bounce-amount));
+	}
+}
