@@ -88,7 +88,7 @@
 </script>
 
 <svelte:head>
-	<meta property="og:title" content="Plumocracy" />
+	<meta property="og:title" content="Plumocracy, I build things." />
 	<meta
 		property="og:description"
 		content="Software engineer, dance music lover, and math fan. I build interactive web apps, games, and AI applications. This is my corner of the internet."
@@ -97,6 +97,7 @@
 	<meta property="og:url" content="https://plumocracy.com" />
 	<meta name="twitter:card" content="summary_large_image" />
 	<link rel="icon" href="/favicon.webp" />
+	<title>Plumocracy</title>
 </svelte:head>
 
 <!-- This div contains the background images -->
