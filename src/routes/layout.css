@@ -5,12 +5,12 @@
 @plugin '@tailwindcss/typography';
 
 @theme {
-	--color-almost-black: #13120E;
-	--color-mint: #76B494;
-	--color-poink: #FA99C5;
-	--color-blood-orange: #EF4B38;
-	--color-pale: #F3E1C7;
-	--color-pale-2: #EFE3D2;
+	--color-almost-black: #13120e;
+	--color-mint: #76b494;
+	--color-poink: #fa99c5;
+	--color-blood-orange: #ef4b38;
+	--color-pale: #f3e1c7;
+	--color-pale-2: #efe3d2;
 	--color-light-pale: #f7f1e9;
 
 	--color-plum-50: #f5eef8;
@@ -18,17 +18,16 @@
 	--color-plum-200: #d4abe1;
 	--color-plum-300: #bc7fcc;
 	--color-plum-400: #a364b5;
-	--color-plum-500: #8A509E;
+	--color-plum-500: #8a509e;
 	--color-plum-600: #734084;
 	--color-plum-700: #5c3169;
 	--color-plum-800: #42234c;
 	--color-plum-900: #291530;
-	--color-plum-950: #110E18;
+	--color-plum-950: #110e18;
 
-
-	--font-franklin: "Libre Franklin";
-	--font-oswald: "Oswald";
-	--font-righteous: "Righteous";
+	--font-franklin: 'Libre Franklin';
+	--font-oswald: 'Oswald';
+	--font-righteous: 'Righteous';
 }
 
 @layer utilities {
@@ -36,9 +35,8 @@
 		position: relative;
 	}
 
-
 	.bg-atomic::before {
-		content: "";
+		content: '';
 		position: fixed;
 		inset: 0;
 		background-image: url('/background.webp');
@@ -52,7 +50,6 @@
 }
 
 @keyframes bounce {
-
 	0%,
 	100% {
 		transform: translateY(0);

@@ -1,6 +1,6 @@
 export type DriverStanding = {
-	givenName: string,
-	familyName: string,
-	team: string,
-	championshipPosition: number,
-}
+	givenName: string;
+	familyName: string;
+	team: string;
+	championshipPosition: number;
+};

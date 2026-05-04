@@ -6,12 +6,12 @@ async function getAccessToken() {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
-			Authorization: `Basic ${btoa(`${env.SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`)}`,
+			Authorization: `Basic ${btoa(`${env.SPOTIFY_CLIENT_ID}:${env.SPOTIFY_CLIENT_SECRET}`)}`
 		},
 		body: new URLSearchParams({
 			grant_type: 'refresh_token',
-			refresh_token: env.SPOTIFY_REFRESH_TOKEN,
-		}),
+			refresh_token: env.SPOTIFY_REFRESH_TOKEN
+		})
 	});
 
 	const data = await res.json();
@@ -22,7 +22,7 @@ export async function getNowPlaying() {
 	const token = await getAccessToken();
 
 	const res = await fetch('https://api.spotify.com/v1/me/player/currently-playing', {
-		headers: { Authorization: `Bearer ${token}` },
+		headers: { Authorization: `Bearer ${token}` }
 	});
 
 	if (res.status === 204) return null; // nothing playing
@@ -31,10 +31,10 @@ export async function getNowPlaying() {
 
 	return {
 		title: data.item.name,
-		artist: data.item.artists.map(a => a.name).join(', '),
+		artist: data.item.artists.map((a) => a.name).join(', '),
 		album: data.item.album.name,
 		albumArt: data.item.album.images[0].url,
 		url: data.item.external_urls.spotify,
-		isPlaying: data.is_playing,
+		isPlaying: data.is_playing
 	};
 }

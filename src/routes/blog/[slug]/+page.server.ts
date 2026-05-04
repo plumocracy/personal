@@ -9,7 +9,7 @@ export const load: PageServerLoad = async ({ locals, fetch, params }) => {
 	const result = await fetch(`/api/v1/blog/posts/${slug}`);
 
 	if (!result) {
-		error(404, "Could not find post.");
+		error(404, 'Could not find post.');
 	}
 
 	const json = await result.json();
@@ -17,8 +17,8 @@ export const load: PageServerLoad = async ({ locals, fetch, params }) => {
 	const isAdmin = await isUserAdmin(user);
 
 	if (!json.post.publishedAt && !isAdmin) {
-		redirect(307, "/")
+		redirect(307, '/');
 	}
 
-	return { user: user, post: json.post }
+	return { user: user, post: json.post };
 };

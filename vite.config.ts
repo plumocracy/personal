@@ -13,7 +13,7 @@ export default defineConfig({
 		fs: {
 			allow: ['static', '..']
 		},
-		allowedHosts: ["rico-unsage-ada.ngrok-free.dev"]
+		allowedHosts: ['rico-unsage-ada.ngrok-free.dev']
 	},
 	test: {
 		expect: { requireAssertions: true },
