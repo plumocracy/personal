@@ -18,6 +18,10 @@ permissions:
 jobs:
   verify:
     runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: ${{ secrets.CI_DATABASE_URL }}
+
     defaults:
       run:
         working-directory: nucleus
@@ -46,12 +50,13 @@ jobs:
   build:
     needs: verify
     runs-on: ubuntu-latest
+
+    env:
+      DATABASE_URL: ${{ secrets.CI_DATABASE_URL }}
+
     defaults:
       run:
         working-directory: nucleus
-
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
     steps:
       - name: Check out repository
@@ -68,19 +73,27 @@ jobs:
       - name: Build application
         run: npm run build
 
+      - name: Upload Worker build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nucleus-worker-build
+          path: |
+            nucleus/.svelte-kit/cloudflare
+            nucleus/wrangler.json
+          if-no-files-found: error
+
   deploy:
-    needs:
-      - verify
-      - build
+    needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     environment: production
-    defaults:
-      run:
-        working-directory: nucleus
 
     env:
       DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+    defaults:
+      run:
+        working-directory: nucleus
 
     steps:
       - name: Check out repository
@@ -94,13 +107,14 @@ jobs:
       - name: Install dependencies
         run: bun install --frozen-lockfile
 
-      - name: Build application
-        run: npm run build
+      - name: Download Worker build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: nucleus-worker-build
+          path: nucleus
 
       - name: Run database migrations
         run: npm run db:migrate
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
