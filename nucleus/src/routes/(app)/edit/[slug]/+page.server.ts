@@ -12,7 +12,7 @@ export const load: PageServerLoad = async ({ locals, params, fetch }) => {
 		redirect(307, '/?redirect_reason=Unauthenticated');
 	}
 
-	if (!isUserAdmin(user)) {
+	if (!(await isUserAdmin(user))) {
 		redirect(307, '/?redirect_reason=Unauthorized');
 	}
 
@@ -32,7 +32,7 @@ export const actions = {
 		if (!user) {
 			return;
 		}
-		if (!isUserAdmin) {
+		if (!(await isUserAdmin(user))) {
 			return;
 		}
 
@@ -55,7 +55,7 @@ export const actions = {
 				.where(eq(posts.id, Number(slug)));
 			return { success: 'Saved successfully!' };
 		} catch (error) {
-			return { error: error.message };
+			return { error: error instanceof Error ? error.message : 'Failed to save post' };
 		}
 	}
 } satisfies Actions;

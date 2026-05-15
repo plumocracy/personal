@@ -6,7 +6,6 @@
 	import { fade } from 'svelte/transition';
 
 	let { data }: PageProps = $props();
-	let posts = data.posts.posts;
 
 	let imageDiv = $state<HTMLDivElement | null>();
 
@@ -76,8 +75,8 @@
 						</h4>
 						<hr />
 						<div class="mt-2 flex flex-col space-y-4 md:space-y-1">
-							{#if posts.length > 0}
-								{#each posts as post}
+							{#if data.posts.posts.length > 0}
+								{#each data.posts.posts as post}
 									<PostCard {post} />
 								{/each}
 							{:else}

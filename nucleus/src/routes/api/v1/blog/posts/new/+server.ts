@@ -1,12 +1,12 @@
 import { db } from '$lib/server/db';
 import { isUserAdmin } from '$lib/server/user';
-import { fail, json } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';
 import { posts } from '$lib/server/db/blog.schema';
 
 export async function POST({ locals }) {
 	const { user } = locals;
-	if (!isUserAdmin(user)) {
-		return fail(401, 'Unauthorized');
+	if (!(await isUserAdmin(user))) {
+		throw error(401, 'Unauthorized');
 	}
 
 	try {
@@ -19,7 +19,7 @@ export async function POST({ locals }) {
 			})
 			.returning();
 		return json({ status: 201, postId: post.id });
-	} catch (error) {
-		return fail(400, { error: error });
+	} catch (err) {
+		throw error(400, err instanceof Error ? err.message : 'Failed to create post');
 	}
 }

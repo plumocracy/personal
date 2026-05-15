@@ -4,7 +4,7 @@
 
 	let { body } = $props();
 
-	const html = DOMPurify.sanitize(marked.parse(body) as string);
+	const html = $derived(DOMPurify.sanitize(marked.parse(body) as string));
 </script>
 
 <div class="prose-theme prose w-full max-w-none px-4 pb-10">

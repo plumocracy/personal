@@ -4,7 +4,6 @@
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
-	const post = data.post;
 </script>
 
 <div
@@ -14,7 +13,7 @@
 </div>
 <div class="flex h-screen w-full justify-center text-pale-2">
 	<div class="mt-10 flex flex-col items-center sm:w-full md:w-full lg:w-1/2">
-		<TitleText text={post.title.toUpperCase()} class="mb-4 text-4xl md:text-5xl" />
-		<MarkdownView body={post.body} />
+		<TitleText text={data.post.title.toUpperCase()} class="mb-4 text-4xl md:text-5xl" />
+		<MarkdownView body={data.post.body} />
 	</div>
 </div>

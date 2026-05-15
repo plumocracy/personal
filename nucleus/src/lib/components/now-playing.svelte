@@ -19,7 +19,7 @@
 <div class="flex flex-row space-y-2 rounded-sm p-4">
 	{#if nowPlaying}
 		<div class="flex h-40 w-40 flex-col">
-			<img src={nowPlaying.albumArt} />
+			<img src={nowPlaying.albumArt} alt={`Album art for ${nowPlaying.title} by ${nowPlaying.artist}`} />
 		</div>
 		<div class="flex flex-col text-center text-wrap">
 			<p>{nowPlaying.title}</p>

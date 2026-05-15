@@ -2,7 +2,7 @@ import { db } from './db';
 import { admin } from './db/auth.schema';
 import { eq } from 'drizzle-orm';
 
-export async function isUserAdmin(user): Promise<boolean> {
+export async function isUserAdmin(user?: App.Locals['user']): Promise<boolean> {
 	if (!user) {
 		return false;
 	}

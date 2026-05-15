@@ -23,6 +23,7 @@
 			<img
 				class="my-auto ml-auto h-48"
 				src="https://media.formula1.com/image/upload/c_fill,w_720/q_auto/v1740000001/common/f1/2026/mclaren/oscpia01/2026mclarenoscpia01right.webp"
+				alt="Oscar Piastri standing in McLaren race suit"
 			/>
 		</div>
 	{/if}

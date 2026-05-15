@@ -7,10 +7,6 @@
 
 	let { data }: PageProps = $props();
 
-	const user = data.user;
-	const posts = data.visiblePosts.posts;
-	const hidden = data.hiddenPosts.posts;
-
 	async function newPost() {
 		const res = await fetch('/api/v1/blog/posts/new', { method: 'POST' });
 		const json = await res.json();
@@ -30,7 +26,7 @@
 				<hr />
 			</div>
 			<div class="flex flex-row space-x-2">
-				{#each posts as post}
+				{#each data.visiblePosts.posts as post}
 					<PostCard {post} />
 				{/each}
 			</div>
@@ -42,7 +38,7 @@
 				<hr />
 			</div>
 			<div class="flex flex-row space-x-2">
-				{#each hidden as post}
+				{#each data.hiddenPosts.posts as post}
 					<PostCard {post} />
 				{/each}
 			</div>

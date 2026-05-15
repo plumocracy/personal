@@ -13,7 +13,7 @@
 		</div>
 	{:else}
 		<div class="flex flex-col">
-			<Button onclick={() => signIn(data.next)} class="text-2xl">Sign in with Github</Button>
+			<Button onclick={() => signIn()} class="text-2xl">Sign in with Github</Button>
 		</div>
 	{/if}
 </div>

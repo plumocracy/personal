@@ -18,13 +18,13 @@
 	} as const;
 
 	let currentTab = $state(tabs.EDIT);
-	let publishText = $state('Publish');
+	const publishText = $derived(post.post.publishedAt ? 'Unpublish' : 'Publish');
 
-	let body = $state(post.post.body);
+	let body = $state('');
 
-	if (post.post.publishedAt) {
-		publishText = 'Unpublish';
-	}
+	$effect(() => {
+		body = post.post.body;
+	});
 
 	function setCurrentTab(tab: 'edit' | 'view') {
 		tab == 'edit' ? (currentTab = tabs.EDIT) : (currentTab = tabs.VIEW);
@@ -126,7 +126,7 @@
 				>
 				<Button
 					class="text-md my-auto"
-					onclick={async (e) => {
+					onclick={async (e: MouseEvent) => {
 						e.preventDefault();
 						if (post.post.publishedAt) {
 							unpublishPost();

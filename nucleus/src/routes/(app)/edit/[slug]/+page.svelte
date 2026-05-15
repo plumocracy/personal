@@ -3,9 +3,8 @@
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
-	const post = data.post;
 </script>
 
 <div class="h-screen w-full pt-10">
-	<MarkdownEditor {post} {form} />
+	<MarkdownEditor post={data.post} {form} />
 </div>

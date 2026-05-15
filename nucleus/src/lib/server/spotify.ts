@@ -1,6 +1,25 @@
 // src/lib/server/spotify.ts
 import { env } from '$env/dynamic/private';
 
+type SpotifyTokenResponse = {
+	access_token: string;
+};
+
+type SpotifyNowPlayingResponse = {
+	item: {
+		name: string;
+		artists: { name: string }[];
+		album: {
+			name: string;
+			images: { url: string }[];
+		};
+		external_urls: {
+			spotify: string;
+		};
+	};
+	is_playing: boolean;
+};
+
 async function getAccessToken() {
 	const res = await fetch('https://accounts.spotify.com/api/token', {
 		method: 'POST',
@@ -14,7 +33,7 @@ async function getAccessToken() {
 		})
 	});
 
-	const data = await res.json();
+	const data = (await res.json()) as SpotifyTokenResponse;
 	return data.access_token;
 }
 
@@ -27,11 +46,11 @@ export async function getNowPlaying() {
 
 	if (res.status === 204) return null; // nothing playing
 
-	const data = await res.json();
+	const data = (await res.json()) as SpotifyNowPlayingResponse;
 
 	return {
 		title: data.item.name,
-		artist: data.item.artists.map((a) => a.name).join(', '),
+		artist: data.item.artists.map((artist) => artist.name).join(', '),
 		album: data.item.album.name,
 		albumArt: data.item.album.images[0].url,
 		url: data.item.external_urls.spotify,
