@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DATABASE_URL: ${{ secrets.CI_DATABASE_URL }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
     defaults:
       run:
@@ -52,7 +52,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      DATABASE_URL: ${{ secrets.CI_DATABASE_URL }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
 
     defaults:
       run:
