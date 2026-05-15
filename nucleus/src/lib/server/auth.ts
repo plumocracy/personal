@@ -4,8 +4,6 @@ import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { env } from '$env/dynamic/private';
 import { getRequestEvent } from '$app/server';
 import { db } from '$lib/server/db';
-import { user } from './db/auth.schema';
-import { eq } from 'drizzle-orm';
 
 export const auth = betterAuth({
 	baseURL: env.ORIGIN,

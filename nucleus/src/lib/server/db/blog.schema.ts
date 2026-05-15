@@ -25,7 +25,7 @@ export const postsRelations = relations(posts, ({ one }) => ({
 	})
 }));
 
-export const userRelations = relations(user, ({ many }) => ({
+export const blogUserRelations = relations(user, ({ many }) => ({
 	sessions: many(session),
 	accounts: many(account),
 	posts: many(posts)
