@@ -1,9 +1,9 @@
 import { isUserAdmin } from '$lib/server/user';
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { getHiddenPosts } from '$lib/server/blog';
+import { getHiddenPosts, getVisiblePosts } from '$lib/server/blog';
 
-export const load: PageServerLoad = async ({ locals, fetch }) => {
+export const load: PageServerLoad = async ({ locals }) => {
 	const { user } = locals;
 
 	if (!user) {
@@ -16,11 +16,10 @@ export const load: PageServerLoad = async ({ locals, fetch }) => {
 		redirect(307, '/?redirect_reason=Unauthorized');
 	}
 
-	const posts = await fetch('/api/v1/blog/posts');
-	const postJson = await posts.json();
+	const [visiblePosts, hiddenPosts] = await Promise.all([
+		getVisiblePosts(),
+		getHiddenPosts({ locals })
+	]);
 
-	const hidden = await getHiddenPosts({ locals });
-	const hiddenJson = await hidden.json();
-
-	return { user: user, visiblePosts: postJson, hiddenPosts: hiddenJson };
+	return { user, visiblePosts, hiddenPosts };
 };

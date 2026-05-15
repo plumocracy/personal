@@ -1,10 +1,40 @@
 import { db } from './db';
-import { error, json } from '@sveltejs/kit';
+import { error } from '@sveltejs/kit';
 import { isUserAdmin } from './user';
 import { posts } from './db/blog.schema';
-import { isNull } from 'drizzle-orm';
+import { desc, isNull, lte } from 'drizzle-orm';
 
-export async function getHiddenPosts({ locals }: { locals: App.Locals }) {
+export type PostListItem = {
+	id: number;
+	title: string;
+	summary: string | null;
+	createdAt: Date;
+	publishedAt: Date | null;
+};
+
+const postListSelection = {
+	id: posts.id,
+	title: posts.title,
+	summary: posts.summary,
+	createdAt: posts.createdAt,
+	publishedAt: posts.publishedAt
+};
+
+export async function getVisiblePosts(limit?: number): Promise<PostListItem[]> {
+	const query = db
+		.select(postListSelection)
+		.from(posts)
+		.where(lte(posts.publishedAt, new Date()))
+		.orderBy(desc(posts.publishedAt));
+
+	if (limit) {
+		return query.limit(limit);
+	}
+
+	return query;
+}
+
+export async function getHiddenPosts({ locals }: { locals: App.Locals }): Promise<PostListItem[]> {
 	const { user } = locals;
 	if (!user) {
 		throw error(401, 'Unauthenticated!');
@@ -14,7 +44,5 @@ export async function getHiddenPosts({ locals }: { locals: App.Locals }) {
 		throw error(401, 'Unauthorized!');
 	}
 
-	const res = await db.select().from(posts).where(isNull(posts.publishedAt));
-
-	return json({ posts: res });
+	return db.select(postListSelection).from(posts).where(isNull(posts.publishedAt)).orderBy(desc(posts.createdAt));
 }

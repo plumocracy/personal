@@ -44,8 +44,8 @@
 								fanatic, and a big fan of fast moving cars.
 							</p>
 							<p>
-								I solve problems, think a lot, and read far too many whitepapers. I write about my
-								engineerscapades here (you've probably read some of them).
+								I solve hard problems, <strong>obsess</strong> over UX, and read far too many whitepapers.
+								I write about my engineerscapades here (you've probably read some of them).
 							</p>
 							<p>
 								I've wandered through a bunch of engineering disciplines, but I keep coming back to
