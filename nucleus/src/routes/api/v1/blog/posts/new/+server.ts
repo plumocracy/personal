@@ -1,13 +1,10 @@
 import { db } from '$lib/server/db';
-import { isUserAdmin } from '$lib/server/user';
+import { requireAdminUser } from '$lib/server/blog-api';
 import { error, json } from '@sveltejs/kit';
 import { posts } from '$lib/server/db/blog.schema';
 
 export async function POST({ locals }) {
-	const { user } = locals;
-	if (!(await isUserAdmin(user))) {
-		throw error(401, 'Unauthorized');
-	}
+	const user = await requireAdminUser(locals);
 
 	try {
 		const [post] = await db

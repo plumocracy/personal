@@ -1,29 +1,56 @@
 import { json } from '@sveltejs/kit';
 import type { DriverStanding } from '$lib/types/f1types';
 
+type ErgastResponse = {
+	MRData?: {
+		StandingsTable?: {
+			StandingsLists?: Array<{
+				DriverStandings?: Array<{
+					position: string;
+					Driver: {
+						givenName: string;
+						familyName: string;
+					};
+					Constructors: {
+						name: string;
+					};
+				}>;
+			}>;
+		};
+	};
+};
+
+function badResponse(message: string) {
+	return json({ status: 400, error: message });
+}
+
+function extractDriverStanding(data: ErgastResponse) {
+	return data.MRData?.StandingsTable?.StandingsLists?.[0]?.DriverStandings?.[0] ?? null;
+}
+
 export async function GET() {
-	const data = await fetch(`https://api.jolpi.ca/ergast/f1/2026/drivers/piastri/driverstandings/`);
+	const response = await fetch(`https://api.jolpi.ca/ergast/f1/2026/drivers/piastri/driverstandings/`);
 
-	if (!data) {
-		return json({ status: 400, error: 'Could not fetch from ergast API!' });
+	if (!response.ok) {
+		return badResponse('Could not fetch from ergast API!');
 	}
 
-	const jsonData = await data.json();
+	const jsonData = (await response.json()) as ErgastResponse;
 	if (!jsonData) {
-		return json({ status: 400, error: 'Could not parse json data!' });
+		return badResponse('Could not parse json data!');
 	}
 
-	const driverStandings = jsonData.MRData.StandingsTable.StandingsLists[0].DriverStandings[0];
+	const driverStandings = extractDriverStanding(jsonData);
 
 	if (!driverStandings) {
-		return json({ status: 400, error: 'Could not get driver standings.' });
+		return badResponse('Could not get driver standings.');
 	}
 
 	const standing: DriverStanding = {
 		givenName: driverStandings.Driver.givenName,
 		familyName: driverStandings.Driver.familyName,
 		team: driverStandings.Constructors.name,
-		championshipPosition: driverStandings.position
+		championshipPosition: Number(driverStandings.position)
 	};
 
 	return json({ status: 200, driverData: JSON.stringify(standing) });
