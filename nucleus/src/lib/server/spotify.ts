@@ -29,7 +29,7 @@ async function getAccessToken() {
 		},
 		body: new URLSearchParams({
 			grant_type: 'refresh_token',
-			refresh_token: env.SPOTIFY_REFRESH_TOKEN
+			refresh_token: env.SPOTIFY_REFRESH_TOKEN ?? ''
 		})
 	});
 
