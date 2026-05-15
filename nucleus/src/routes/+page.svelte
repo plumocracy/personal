@@ -45,8 +45,11 @@
 							</p>
 							<p>
 								I solve problems, think a lot, and read far too many whitepapers. I write about my
-								engineerscapades here (you've probably read some of them). I've touched a ton of
-								disciplines in the engineering world but much prefer software to anything else.
+								engineerscapades here (you've probably read some of them).
+							</p>
+							<p>
+								I've wandered through a bunch of engineering disciplines, but I keep coming back to
+								software. There's just something so charming about compiler errors.
 							</p>
 						</div>
 					</div>
@@ -59,11 +62,11 @@
 					<hr />
 					<ul class="mt-2 flex flex-col space-y-2">
 						<li>
-							My primary programming languages are <strong>typescript, go, rust, and c. </strong>
+							My primary programming languages are <strong>typescript, rust, and go. </strong>
 						</li>
 						<li>My favorite framework is <strong>svelte.</strong></li>
 						<li>
-							I make <strong>interactive web apps, games, and AI applications.</strong>
+							I make <strong>interactive web apps, dev tools, and reliable systems.</strong>
 						</li>
 					</ul>
 				</div>
