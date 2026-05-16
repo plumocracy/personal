@@ -2,7 +2,7 @@ import { db } from './db';
 import { error } from '@sveltejs/kit';
 import { isUserAdmin } from './user';
 import { posts } from './db/blog.schema';
-import { desc, isNull, lte } from 'drizzle-orm';
+import { and, desc, isNotNull, isNull, lte } from 'drizzle-orm';
 
 export type PostListItem = {
 	id: number;
@@ -24,7 +24,7 @@ export async function getVisiblePosts(limit?: number): Promise<PostListItem[]> {
 	const query = db
 		.select(postListSelection)
 		.from(posts)
-		.where(lte(posts.publishedAt, new Date()))
+		.where(and(isNotNull(posts.publishedAt), lte(posts.publishedAt, new Date())))
 		.orderBy(desc(posts.publishedAt));
 
 	if (limit) {

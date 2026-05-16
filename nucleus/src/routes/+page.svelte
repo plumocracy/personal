@@ -18,6 +18,8 @@
 			githubLink: ''
 		}
 	];
+
+	const posts = $derived(data.posts?.posts ?? []);
 </script>
 
 {#if visible}
@@ -78,8 +80,8 @@
 						</h4>
 						<hr />
 						<div class="mt-2 flex flex-col space-y-4 md:space-y-1">
-							{#if data.posts.posts.length > 0}
-								{#each data.posts.posts as post}
+							{#if posts.length > 0}
+								{#each posts as post}
 									<PostCard {post} />
 								{/each}
 							{:else}
