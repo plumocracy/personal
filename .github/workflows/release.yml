@@ -113,15 +113,6 @@ jobs:
           name: nucleus-worker-build
           path: nucleus
 
-      - name: Run database migrations
-        working-directory: nucleus
-        timeout-minutes: 3
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          CI: true
-          NO_COLOR: 1
-        run: bunx drizzle-kit migrate --config=drizzle.config.ts
-
       - name: Deploy to Cloudflare Workers
         uses: cloudflare/wrangler-action@v3
         with:
