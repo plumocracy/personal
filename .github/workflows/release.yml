@@ -79,7 +79,9 @@ jobs:
           name: nucleus-worker-build
           path: |
             nucleus/.svelte-kit/cloudflare
-            nucleus/wrangler.json
+            nucleus/.svelte-kit/cloudflare-tmp
+            nucleus/.svelte-kit/output
+            nucleus/wrangler.jsonc
           if-no-files-found: error
 
   deploy:
