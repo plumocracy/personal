@@ -82,6 +82,7 @@ jobs:
             nucleus/.svelte-kit/cloudflare-tmp
             nucleus/.svelte-kit/output
             nucleus/wrangler.jsonc
+          include-hidden-files: true
           if-no-files-found: error
 
   deploy:
