@@ -4,9 +4,15 @@ on:
   push:
     branches:
       - main
+    paths:
+      - nucleus/**
+      - .github/workflows/release.yml
   pull_request:
     branches:
       - main
+    paths:
+      - nucleus/**
+      - .github/workflows/release.yml
 
 concurrency:
   group: release-${{ github.ref }}
@@ -122,4 +128,5 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           workingDirectory: nucleus
+          packageManager: bun
           command: deploy
