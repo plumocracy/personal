@@ -1,6 +1,7 @@
 name: Health Check Service
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
