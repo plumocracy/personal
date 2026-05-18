@@ -1,0 +1,38 @@
+{
+	"name": "health-check-service",
+	"version": "1.0.0",
+	"description": "",
+	"scripts": {
+		"dev": "wrangler dev",
+		"deploy": "wrangler deploy",
+		"test": "vitest run",
+		"typecheck": "tsc --noEmit",
+		"db:migrate": "node-pg-migrate up",
+		"db:rollback": "node-pg-migrate down"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"devEngines": {
+		"packageManager": {
+			"name": "pnpm",
+			"version": "^11.1.2",
+			"onFail": "download"
+		}
+	},
+	"type": "module",
+	"dependencies": {
+		"@neondatabase/serverless": "^1.1.0",
+		"node-pg-migrate": "^8.0.4",
+		"pg": "^8.20.0",
+		"resend": "^6.12.3"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20260517.1",
+		"@types/node": "^25.8.0",
+		"ts-node": "^10.9.2",
+		"typescript": "^6.0.3",
+		"vitest": "^4.1.6",
+		"wrangler": "^4.92.0"
+	}
+}
