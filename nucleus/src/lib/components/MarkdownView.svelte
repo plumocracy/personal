@@ -94,4 +94,9 @@
 	:global(.prose-theme li::marker) {
 		color: var(--color-plum-400);
 	}
+
+	/* Tables */
+	:global(.prose-theme thead th) {
+		color: var(--color-poink);
+	}
 </style>
