@@ -40,8 +40,18 @@ function createExecutionContext() {
 describe("health check worker", () => {
 	beforeEach(() => {
 		queryMock.mockReset();
+		queryMock.mockResolvedValue([]);
 		resendSendMock.mockReset();
-		vi.stubGlobal("fetch", vi.fn());
+		vi.stubGlobal(
+			"fetch",
+			vi.fn().mockResolvedValue(
+				Response.json({
+					status: "healthy",
+					site: { status: "healthy" },
+					chat: { status: "healthy" },
+				}),
+			),
+		);
 	});
 
 	it("serves a lightweight status page from root", async () => {
@@ -56,7 +66,27 @@ describe("health check worker", () => {
 
 	it("returns latest service statuses from /status", async () => {
 		queryMock.mockResolvedValueOnce([
-			{ service: "plumocracy", status: "ok", checked_at: "2026-05-18T00:00:00.000Z" },
+			{
+				service: "plumocracy",
+				component: null,
+				check_name: null,
+				status: "ok",
+				checked_at: "2026-05-18T00:00:00.000Z",
+			},
+			{
+				service: "plumocracy",
+				component: "chat",
+				check_name: null,
+				status: "bad",
+				checked_at: "2026-05-18T00:00:01.000Z",
+			},
+			{
+				service: "plumocracy",
+				component: "chat",
+				check_name: "openRouter",
+				status: "bad",
+				checked_at: "2026-05-18T00:00:02.000Z",
+			},
 		]);
 
 		const response = await worker.fetch(new Request("https://status.example.com/status"), env);
@@ -66,9 +96,23 @@ describe("health check worker", () => {
 			plumocracy: {
 				status: "ok",
 				checked_at: "2026-05-18T00:00:00.000Z",
+				checks: {
+					chat: {
+						status: "bad",
+						checked_at: "2026-05-18T00:00:01.000Z",
+						checks: {
+							openRouter: {
+								status: "bad",
+								checked_at: "2026-05-18T00:00:02.000Z",
+							},
+						},
+					},
+				},
 			},
 		});
-		expect(queryMock).toHaveBeenCalledWith(expect.stringContaining("SELECT DISTINCT ON (service)"));
+		expect(queryMock).toHaveBeenCalledWith(
+			expect.stringContaining("SELECT DISTINCT ON (service, component, check_name)"),
+		);
 	});
 
 	it("returns 404 for unknown routes", async () => {
@@ -79,20 +123,90 @@ describe("health check worker", () => {
 	});
 
 	it("inserts an ok service check from the per-minute cron", async () => {
-		vi.mocked(fetch).mockResolvedValueOnce(Response.json({ status: "ok" }));
+		vi.mocked(fetch).mockResolvedValueOnce(
+			Response.json({
+				status: "healthy",
+				site: {
+					status: "healthy",
+					checks: { database: { status: "healthy" } },
+				},
+				chat: {
+					status: "healthy",
+					checks: {
+						database: { status: "healthy" },
+						openRouter: { status: "healthy" },
+					},
+				},
+			}),
+		);
 		const { ctx, waitForPromises } = createExecutionContext();
 
 		await worker.scheduled({ cron: "* * * * *" } as ScheduledEvent, env, ctx);
 		await waitForPromises();
 
 		expect(queryMock).toHaveBeenCalledWith(
-			"INSERT INTO service_checks (service, status) VALUES ($1, $2)",
-			["plumocracy", "ok"],
+			"INSERT INTO service_checks (service, component, check_name, status) VALUES ($1, $2, $3, $4)",
+			["plumocracy", null, null, "ok"],
+		);
+		expect(queryMock).toHaveBeenCalledWith(
+			"INSERT INTO service_checks (service, component, check_name, status) VALUES ($1, $2, $3, $4)",
+			["plumocracy", "site", "database", "ok"],
+		);
+		expect(queryMock).toHaveBeenCalledWith(
+			"INSERT INTO service_checks (service, component, check_name, status) VALUES ($1, $2, $3, $4)",
+			["plumocracy", "chat", "openRouter", "ok"],
+		);
+		expect(queryMock).toHaveBeenCalledWith(
+			"INSERT INTO service_checks (service, component, check_name, status) VALUES ($1, $2, $3, $4)",
+			["atom", null, null, "ok"],
+		);
+		expect(queryMock).toHaveBeenCalledWith(
+			"INSERT INTO service_checks (service, component, check_name, status) VALUES ($1, $2, $3, $4)",
+			["atom", "site", null, "ok"],
+		);
+		expect(queryMock).toHaveBeenCalledWith(
+			"INSERT INTO service_checks (service, component, check_name, status) VALUES ($1, $2, $3, $4)",
+			["atom", "chat", null, "ok"],
 		);
 		expect(resendSendMock).not.toHaveBeenCalled();
 	});
 
-	it("inserts a bad check, sends email, and records the email", async () => {
+	it("does not send email before five consecutive failed service checks", async () => {
+		vi.mocked(fetch).mockResolvedValueOnce(Response.json({ status: "bad" }, { status: 500 }));
+		const { ctx, waitForPromises } = createExecutionContext();
+
+		await worker.scheduled({ cron: "* * * * *" } as ScheduledEvent, env, ctx);
+		await waitForPromises();
+
+		expect(queryMock).toHaveBeenCalledWith(
+			"INSERT INTO service_checks (service, component, check_name, status) VALUES ($1, $2, $3, $4)",
+			["plumocracy", null, null, "bad"],
+		);
+		expect(resendSendMock).not.toHaveBeenCalled();
+	});
+
+	it("sends email after five failed service checks and records the email", async () => {
+		queryMock.mockImplementation((query: string, params?: unknown[]) => {
+			if (query.includes("SELECT status")) {
+				if (params?.[0] === "atom") {
+					return Promise.resolve([{ status: "ok" }]);
+				}
+
+				return Promise.resolve([
+					{ status: "bad" },
+					{ status: "bad" },
+					{ status: "bad" },
+					{ status: "bad" },
+					{ status: "bad" },
+				]);
+			}
+
+			if (query.includes("SELECT EXISTS")) {
+				return Promise.resolve([{ sent_recently: false }]);
+			}
+
+			return Promise.resolve([]);
+		});
 		vi.mocked(fetch).mockResolvedValueOnce(Response.json({ status: "bad" }, { status: 500 }));
 		resendSendMock.mockResolvedValueOnce({ data: { id: "email_123" }, error: null });
 		const { ctx, waitForPromises } = createExecutionContext();
@@ -100,10 +214,6 @@ describe("health check worker", () => {
 		await worker.scheduled({ cron: "* * * * *" } as ScheduledEvent, env, ctx);
 		await waitForPromises();
 
-		expect(queryMock).toHaveBeenCalledWith(
-			"INSERT INTO service_checks (service, status) VALUES ($1, $2)",
-			["plumocracy", "bad"],
-		);
 		expect(resendSendMock).toHaveBeenCalledWith({
 			from: "status@status.plumocracy.com",
 			to: "plum@plumocracy.com",
@@ -111,9 +221,40 @@ describe("health check worker", () => {
 			html: "go fix",
 		});
 		expect(queryMock).toHaveBeenCalledWith(
-			"INSERT INTO sent_emails (resend_id, error_msg) VALUES ($1, $2)",
-			["email_123", null],
+			"INSERT INTO sent_emails (service, resend_id, error_msg) VALUES ($1, $2, $3)",
+			["plumocracy", "email_123", null],
 		);
+	});
+
+	it("does not send another email within an hour while service remains down", async () => {
+		queryMock.mockImplementation((query: string, params?: unknown[]) => {
+			if (query.includes("SELECT status")) {
+				if (params?.[0] === "atom") {
+					return Promise.resolve([{ status: "ok" }]);
+				}
+
+				return Promise.resolve([
+					{ status: "bad" },
+					{ status: "bad" },
+					{ status: "bad" },
+					{ status: "bad" },
+					{ status: "bad" },
+				]);
+			}
+
+			if (query.includes("SELECT EXISTS")) {
+				return Promise.resolve([{ sent_recently: true }]);
+			}
+
+			return Promise.resolve([]);
+		});
+		vi.mocked(fetch).mockResolvedValueOnce(Response.json({ status: "bad" }, { status: 500 }));
+		const { ctx, waitForPromises } = createExecutionContext();
+
+		await worker.scheduled({ cron: "* * * * *" } as ScheduledEvent, env, ctx);
+		await waitForPromises();
+
+		expect(resendSendMock).not.toHaveBeenCalled();
 	});
 
 	it("runs cleanup from the Sunday midnight cron", async () => {
