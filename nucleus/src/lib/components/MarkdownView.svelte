@@ -1,10 +1,27 @@
 <script lang="ts">
 	import { marked } from 'marked';
-	import DOMPurify from 'isomorphic-dompurify';
 
-	let { body } = $props();
+	let { body }: { body: string } = $props();
+	let html = $state('');
+	let renderVersion = 0;
 
-	const html = $derived(DOMPurify.sanitize(marked.parse(body) as string));
+	$effect(() => {
+		const version = ++renderVersion;
+
+		Promise.resolve(marked.parse(body))
+			.then(async (parsedHtml) => {
+				const { default: DOMPurify } = await import('dompurify');
+
+				if (version === renderVersion) {
+					html = DOMPurify.sanitize(parsedHtml);
+				}
+			})
+			.catch(() => {
+				if (version === renderVersion) {
+					html = '';
+				}
+			});
+	});
 </script>
 
 <div class="prose-theme prose w-full max-w-none px-4 pb-10">
