@@ -64,7 +64,7 @@
 					<hr />
 					<ul class="mt-2 flex flex-col space-y-2">
 						<li>
-							My primary programming languages are <strong>typescript, rust, and go. </strong>
+							My primary programming languages are <strong>typescript, rust, and python.</strong>
 						</li>
 						<li>My favorite framework is <strong>svelte.</strong></li>
 						<li>
