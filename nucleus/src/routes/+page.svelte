@@ -16,6 +16,10 @@
 			name: 'Atom Simulation',
 			destination: 'https://atom.plumocracy.com',
 			githubLink: ''
+		},
+		{
+			name: 'Crowdslop',
+			destination: 'https://crowdslop.com'
 		}
 	];
 
