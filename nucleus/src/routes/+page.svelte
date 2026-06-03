@@ -70,7 +70,7 @@
 						<li>
 							My primary programming languages are <strong>typescript, rust, and python.</strong>
 						</li>
-						<li>My favorite frameworks are <strong>Svelte</strong> and <strong>Next</strong>.</li>
+						<li>My favorite frameworks are <strong>Svelte</strong> and <strong>Next.</strong></li>
 						<li>
 							I make <strong>interactive web apps, dev tools, and reliable systems.</strong>
 						</li>
