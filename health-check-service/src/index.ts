@@ -37,7 +37,7 @@ interface ServiceCheckResult {
 
 type Sql = NeonQueryFunction<false, false>;
 
-const HEALTH_CHECK_CRON = "* * * * *";
+const HEALTH_CHECK_CRON = "*/30 * * * *";
 const CLEANUP_CRON = "0 0 * * SUN";
 const FAILURE_EMAIL_CHECK_COUNT = 5;
 
